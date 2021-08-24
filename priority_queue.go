@@ -69,7 +69,7 @@ func (pq *PriorityQueue) Add(x interface{}, priorities ...int) error {
 		return nil
 	}
 
-	if len(pq.s.items) == pq.capacity {
+	if len(pq.s.items) >= pq.capacity {
 		return errors.New("overflow")
 	}
 
@@ -170,10 +170,12 @@ func (s *store) Push(x interface{}) {
 
 func (s *store) Pop() interface{} {
 	size := len(s.items)
-	delete(s.lookup, s.items[size-1].value)
+	it := s.items[size-1]
+
+	delete(s.lookup, it.value)
 
 	s.items[size-1].index = -1
 	s.items[size-1] = nil
 	s.items = s.items[0 : size-1]
-	return nil
+	return it
 }
